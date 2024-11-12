@@ -12,9 +12,7 @@ public class UserDTO
     public string Email { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
     public User.Type UserType { get; set; }
-
     public UserDTO() { }
-
     public UserDTO(Guid id, string vatNumber, string name, string surname, string address, string phoneNumber, string email, string password, User.Type type)
     {
         Id = id;

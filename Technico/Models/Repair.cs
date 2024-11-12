@@ -1,0 +1,61 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Technico.Models;
+
+public class Repair
+{
+    [Key]
+    public Guid Id { get; set; }
+
+    [Required]
+    public DateTime ScheduledDate { get; set; }
+
+    [Required]
+    public RepairType Type { get; set; }
+
+    [Required]
+    public Status CurrentStatus { get; set; } = Status.Pending;
+
+    [Required]
+    [MaxLength(500)]
+    public string Description { get; set; } = string.Empty;
+
+    [Required]
+    [MaxLength(200)]
+    public string Address { get; set; } = string.Empty;
+
+    [Required]
+    [Range(0.01, double.MaxValue)]
+    public decimal Cost { get; set; }
+
+    public Property Property { get; set; }
+    [Required]
+    public int PropertyId { get; set; }
+
+    public Repair() { }
+
+    public Repair(Guid id, DateTime scheduledDate, RepairType type, string description, string address, decimal cost, int propertyId)
+    {
+        Id = id;
+        ScheduledDate = scheduledDate;
+        Type = type;
+        Description = description;
+        Address = address;
+        Cost = cost;
+        PropertyId = propertyId;
+    }
+
+    public enum Status
+    {
+        Pending,
+        InProgress,
+        Complete
+    }
+
+    public enum RepairType
+    {
+        Plumbing,
+        Electrical,
+        Painting
+    }
+}

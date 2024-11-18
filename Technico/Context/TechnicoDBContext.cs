@@ -4,9 +4,7 @@ namespace Technico.Context;
 
 public class TechnicoDBContext : DbContext
 {
-    public DbSet<Professional> Professionals{ get; set; }
-
-    public DbSet<Owner> Owners{ get; set; }
+    public DbSet<User> Users{ get; set; }
     public DbSet<Repair> Repairs{ get; set; }
     public DbSet<Property> Properties{ get; set; }
 

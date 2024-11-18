@@ -1,5 +1,6 @@
 using Technico.Repositories;
 using Technico.Models;
+using Technico.Services;
 using Microsoft.EntityFrameworkCore;
 using Technico.Context;
 
@@ -10,22 +11,25 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IRepository<Owner, Guid>, OwnerRepository>(); //add scoped to create new instance of repo in each request
-builder.Services.AddScoped<IRepository<Professional, Guid>, ProfessionalRepository>();
-builder.Services.AddScoped<IRepository<Property, Guid>, PropertyRepository>();
-builder.Services.AddScoped<IRepository<Repair, Guid>, RepairRepository>();
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<PropertyRepository>();
+builder.Services.AddScoped<RepairRepository>();
+
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<PropertyService>();
+builder.Services.AddScoped<RepairService>();
+
 builder.Services.AddDbContext<TechnicoDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TechnicoDBContext")));
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowLocalhost", policy =>
-    {
-        policy.WithOrigins("http://localhost:3000") // frontend URL
-              .AllowAnyHeader()
-              .AllowAnyMethod();
-    });
+    options.AddPolicy("AllowAll",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
 });
 
 var app = builder.Build();
+app.UseCors("AllowAll");
 
 if (app.Environment.IsDevelopment())
 {

@@ -4,7 +4,7 @@ using Technico.Models;
 
 namespace Technico.Repositories
 {
-    public class PropertyRepository : IRepository<Property, Guid>
+    public class PropertyRepository
     {
         private readonly TechnicoDBContext _dbContext;
 

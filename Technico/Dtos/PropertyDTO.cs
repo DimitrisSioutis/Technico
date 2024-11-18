@@ -15,7 +15,6 @@ public class PropertyDTO
         PropertyIDNumber = propertyIDNumber;
         Address = address;
         YearOfConstruction = yearOfConstruction;
-        OwnerID = ownerID;
         Repairs = repairs;
     }
 }

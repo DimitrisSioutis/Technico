@@ -13,7 +13,7 @@ public class Property
 
     [Required]
     public int YearOfConstruction { get; set; }
-
+    [Required]
     public int OwnerID { get; set; }
 
     public List<Repair> Repairs { get; set; }
@@ -24,7 +24,5 @@ public class Property
         PropertyIDNumber = propertyIDNumber;
         Address = address;
         YearOfConstruction = yearOfConstruction;
-        OwnerID = ownerID;
-        Repairs = repairs;
     }
 }

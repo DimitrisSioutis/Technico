@@ -1,5 +1,6 @@
 ﻿using Technico.Models;
 using Technico.Repositories;
+using Technico.Dtos;
 
 namespace Technico.Services;
 
@@ -12,10 +13,30 @@ public class PropertyService
         _propertyRepository = propertyRepository;
     }
 
-    public async Task<Property?> CreateAsync(Property property)
+    public async Task<PropertyDTO?> CreateAsync(PropertyDTO propertyDTO)
     {
-        await _propertyRepository.CreateAsync(property);
-        return property;
+        Console.WriteLine($"Input PropertyDTO - Address: {propertyDTO.Address}, OwnerID: {propertyDTO.OwnerID}");
+
+        var properties = await _propertyRepository.GetAllAsync();
+        bool PropertyExists = properties.Any(u => u.Address == propertyDTO.Address);
+        if (PropertyExists) return null;
+
+        var property = new Property
+        {
+            Address = propertyDTO.Address,
+            YearOfConstruction = propertyDTO.YearOfConstruction,
+            OwnerID = propertyDTO.OwnerID
+        };
+
+        Console.WriteLine($"Created Property Object - Address: {property.Address}, OwnerID: {property.OwnerID}");
+
+        var result = await _propertyRepository.CreateAsync(property);
+        return result == null ? null : new PropertyDTO
+        {
+            Address = result.Address,
+            YearOfConstruction = result.YearOfConstruction,
+            OwnerID = result.OwnerID
+        };
     }
 
     public async Task<bool> DeleteAsync(Guid id)
@@ -23,18 +44,57 @@ public class PropertyService
         return await _propertyRepository.DeleteAsync(id);
     }
 
-    public async Task<List<Property?>> GetAllAsync()
+    public async Task<List<PropertyDTO?>> GetAllAsync()
     {
-        return await _propertyRepository.GetAllAsync();
+        var properties = await _propertyRepository.GetAllAsync();
+        var propertyDTOs = properties.Select(property => new PropertyDTO
+        {
+            PropertyIDNumber = property.PropertyIDNumber,
+            Address = property.Address,
+            YearOfConstruction = property.YearOfConstruction,
+            OwnerID = property.OwnerID
+        }).ToList();
+        return propertyDTOs;
     }
 
-    public async Task<Property?> GetAsync(Guid id)
+    public async Task<PropertyDTO?> GetAsync(Guid id)
     {
-        return await _propertyRepository.GetAsync(id);
+        var property = await _propertyRepository.GetAsync(id);
+        if (property == null) return null;
+
+        var propertyDTO = new PropertyDTO
+        {
+            PropertyIDNumber = property.PropertyIDNumber,
+            Address = property.Address,
+            YearOfConstruction = property.YearOfConstruction,
+            OwnerID= property.OwnerID
+        };
+
+        return propertyDTO;
+
     }
 
-    public async Task<Property?> UpdateAsync(Property property)
+    public async Task<PropertyDTO?> UpdateAsync(PropertyDTO propertyDTO)
     {
-        return await _propertyRepository.UpdateAsync(property);
+        var existingProperty = await _propertyRepository.GetAsync(propertyDTO.PropertyIDNumber);
+        if (existingProperty == null) return null;
+
+        var properties = await _propertyRepository.GetAllAsync();
+        var existingAdress = properties.Single(x => x.Address == propertyDTO.Address);
+
+        if (existingAdress != null) return null;
+
+        existingProperty.Address = propertyDTO.Address;
+        existingProperty.YearOfConstruction = propertyDTO.YearOfConstruction;
+
+        var result = await _propertyRepository.UpdateAsync(existingProperty);
+
+        return new PropertyDTO
+        {
+            PropertyIDNumber = result.PropertyIDNumber,
+            Address = result.Address,
+            OwnerID = result.OwnerID,
+            YearOfConstruction= result.YearOfConstruction,
+        };
     }
 }

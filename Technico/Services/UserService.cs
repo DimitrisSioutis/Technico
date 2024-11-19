@@ -73,6 +73,14 @@ public class UserService
         var user = await _userRepository.GetAsync(id);
         if (user == null) return null;
 
+        // Debug logging
+        Console.WriteLine($"User found: {user.Id}");
+        Console.WriteLine($"Properties count: {user.Properties?.Count ?? 0}");
+
+        foreach (var property in user.Properties)
+        {
+            Console.WriteLine($"Property: ID={property.PropertyIDNumber}, Address={property.Address}, OwnerID={property.OwnerID}");
+        }
 
         var userDTO = new UserResponseDTO
         {
@@ -86,9 +94,9 @@ public class UserService
                 YearOfConstruction = property.YearOfConstruction
             }).ToList()
         };
-
         return userDTO;
     }
+
 
     public async Task<List<UserResponseDTO>> GetAllAsync()
     {
@@ -97,7 +105,13 @@ public class UserService
         {
             Id = user.Id,
             Name = user.Name,
-            Email = user.Email
+            Email = user.Email,
+            Properties = user.Properties.Select(property => new PropertyDTO
+            {
+                PropertyIDNumber = property.PropertyIDNumber,
+                Address = property.Address,
+                YearOfConstruction = property.YearOfConstruction
+            }).ToList()
         }).ToList();
     }
 }

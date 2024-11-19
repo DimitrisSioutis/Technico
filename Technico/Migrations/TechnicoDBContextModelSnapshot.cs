@@ -33,10 +33,7 @@ namespace Technico.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<int>("OwnerID")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("UserId")
+                    b.Property<Guid>("OwnerID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("YearOfConstruction")
@@ -44,7 +41,10 @@ namespace Technico.Migrations
 
                     b.HasKey("PropertyIDNumber");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("Address")
+                        .IsUnique();
+
+                    b.HasIndex("OwnerID");
 
                     b.ToTable("Properties");
                 });
@@ -72,11 +72,8 @@ namespace Technico.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<Guid>("PropertyIDNumber")
+                    b.Property<Guid>("PropertyId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("PropertyId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("ScheduledDate")
                         .HasColumnType("datetime2");
@@ -86,7 +83,7 @@ namespace Technico.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PropertyIDNumber");
+                    b.HasIndex("PropertyId");
 
                     b.ToTable("Repairs");
                 });
@@ -147,16 +144,20 @@ namespace Technico.Migrations
 
             modelBuilder.Entity("Technico.Models.Property", b =>
                 {
-                    b.HasOne("Technico.Models.User", null)
+                    b.HasOne("Technico.Models.User", "Owner")
                         .WithMany("Properties")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("OwnerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("Technico.Models.Repair", b =>
                 {
                     b.HasOne("Technico.Models.Property", "Property")
                         .WithMany("Repairs")
-                        .HasForeignKey("PropertyIDNumber")
+                        .HasForeignKey("PropertyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

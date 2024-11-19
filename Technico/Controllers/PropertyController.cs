@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Technico.Models;
 using Technico.Services;
+using Technico.Dtos;
 
 namespace Technico.Controllers
 {
@@ -17,14 +17,14 @@ namespace Technico.Controllers
 
         // GET: api/Property
         [HttpGet]
-        public async Task<ActionResult<List<Property?>>> GetAll()
+        public async Task<ActionResult<List<PropertyDTO?>>> GetAll()
         {
             return await _propertyService.GetAllAsync();
         }
 
         // GET: api/Property/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<Property>> GetById(Guid id)
+        public async Task<ActionResult<PropertyDTO>> GetById(Guid id)
         {
             var property = await _propertyService.GetAsync(id);
             if (property == null)
@@ -36,15 +36,15 @@ namespace Technico.Controllers
 
         // POST: api/Property
         [HttpPost]
-        public async Task<ActionResult<Property>> PostProperty(Property property)
+        public async Task<ActionResult<PropertyDTO>> PostProperty(PropertyDTO propertyDTO)
         {
-            var newProperty = await _propertyService.CreateAsync(property);
+            var newProperty = await _propertyService.CreateAsync(propertyDTO);
             return CreatedAtAction("GetById", new { id = newProperty.PropertyIDNumber }, newProperty);
         }
 
         // PUT: api/Property/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProperty(Guid id, Property property)
+        public async Task<IActionResult> UpdateProperty(Guid id, PropertyDTO property)
         {
             if (id != property.PropertyIDNumber)
             {

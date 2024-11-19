@@ -15,8 +15,13 @@ namespace Technico.Repositories
 
         public async Task<Property?> CreateAsync(Property property)
         {
+            Console.WriteLine($"Creating Property - Address: {property.Address}, OwnerID: {property.OwnerID}");
+
             _dbContext.Properties.Add(property);
             await _dbContext.SaveChangesAsync();
+
+            Console.WriteLine($"Created Property - Address: {property.Address}, OwnerID: {property.OwnerID}");
+
             return property;
         }
 

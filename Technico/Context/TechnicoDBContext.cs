@@ -16,9 +16,15 @@ public class TechnicoDBContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        // Configure Repair Cost Precision
         modelBuilder.Entity<Repair>()
-        .Property(r => r.Cost)
-        .HasPrecision(18, 2);
+            .Property(r => r.Cost)
+            .HasPrecision(18, 2);
+
+        modelBuilder.Entity<Property>()
+            .HasOne(p => p.Owner)
+            .WithMany(u => u.Properties)
+            .HasForeignKey(p => p.OwnerID);
 
     }
 

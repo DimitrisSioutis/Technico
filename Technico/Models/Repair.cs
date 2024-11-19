@@ -30,11 +30,11 @@ public class Repair
 
     public Property Property { get; set; }
     [Required]
-    public int PropertyId { get; set; }
+    public Guid PropertyId { get; set; }
 
     public Repair() { }
 
-    public Repair(Guid id, DateTime scheduledDate, RepairType type, string description, string address, decimal cost, int propertyId)
+    public Repair(Guid id, DateTime scheduledDate, RepairType type, string description, string address, decimal cost, Guid propertyId)
     {
         Id = id;
         ScheduledDate = scheduledDate;

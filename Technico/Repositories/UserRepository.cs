@@ -41,8 +41,9 @@ public class UserRepository
 
     public async Task<User?> GetAsync(Guid id)
     {
-        User? user = await _dbContext.Users.FindAsync(id);
-        return user;
+        return await _dbContext.Users
+            .Include(u => u.Properties) 
+            .FirstOrDefaultAsync(u => u.Id == id);
     }
 
     public async Task<User?> UpdateAsync(User oldUser)

@@ -23,7 +23,7 @@ namespace Technico.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserType = table.Column<int>(type: "int", nullable: false)
+                    Role = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -37,17 +37,17 @@ namespace Technico.Migrations
                     PropertyIDNumber = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     YearOfConstruction = table.Column<int>(type: "int", nullable: false),
-                    OwnerID = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    OwnerID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Properties", x => x.PropertyIDNumber);
                     table.ForeignKey(
-                        name: "FK_Properties_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Properties_Users_OwnerID",
+                        column: x => x.OwnerID,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -61,29 +61,34 @@ namespace Technico.Migrations
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Address = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Cost = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
-                    PropertyIDNumber = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PropertyId = table.Column<int>(type: "int", nullable: false)
+                    PropertyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Repairs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Repairs_Properties_PropertyIDNumber",
-                        column: x => x.PropertyIDNumber,
+                        name: "FK_Repairs_Properties_PropertyId",
+                        column: x => x.PropertyId,
                         principalTable: "Properties",
                         principalColumn: "PropertyIDNumber",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Properties_UserId",
+                name: "IX_Properties_Address",
                 table: "Properties",
-                column: "UserId");
+                column: "Address",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Repairs_PropertyIDNumber",
+                name: "IX_Properties_OwnerID",
+                table: "Properties",
+                column: "OwnerID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Repairs_PropertyId",
                 table: "Repairs",
-                column: "PropertyIDNumber");
+                column: "PropertyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",

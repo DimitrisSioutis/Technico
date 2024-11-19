@@ -11,11 +11,11 @@ public class RepairDTO
     public string Description { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public decimal Cost { get; set; }
-    public int PropertyId { get; set; }
+    public Guid PropertyId { get; set; }
 
     public RepairDTO() { }
 
-    public RepairDTO(Guid id, DateTime scheduledDate, Repair.RepairType type, string description, string address, decimal cost, int propertyId, Repair.Status status)
+    public RepairDTO(Guid id, DateTime scheduledDate, Repair.RepairType type, string description, string address, decimal cost, Guid propertyId, Repair.Status status)
     {
         Id = id;
         ScheduledDate = scheduledDate;

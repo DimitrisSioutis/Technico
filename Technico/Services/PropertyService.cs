@@ -15,8 +15,6 @@ public class PropertyService
 
     public async Task<PropertyDTO?> CreateAsync(PropertyDTO propertyDTO)
     {
-        Console.WriteLine($"Input PropertyDTO - Address: {propertyDTO.Address}, OwnerID: {propertyDTO.OwnerID}");
-
         var properties = await _propertyRepository.GetAllAsync();
         bool PropertyExists = properties.Any(u => u.Address == propertyDTO.Address);
         if (PropertyExists) return null;
@@ -27,8 +25,6 @@ public class PropertyService
             YearOfConstruction = propertyDTO.YearOfConstruction,
             OwnerID = propertyDTO.OwnerID
         };
-
-        Console.WriteLine($"Created Property Object - Address: {property.Address}, OwnerID: {property.OwnerID}");
 
         var result = await _propertyRepository.CreateAsync(property);
         return result == null ? null : new PropertyDTO
@@ -44,15 +40,16 @@ public class PropertyService
         return await _propertyRepository.DeleteAsync(id);
     }
 
-    public async Task<List<PropertyDTO?>> GetAllAsync()
+    public async Task<List<SimplePropertyDTO?>> GetAllAsync()
     {
         var properties = await _propertyRepository.GetAllAsync();
-        var propertyDTOs = properties.Select(property => new PropertyDTO
+        var propertyDTOs = properties.Select(property => new SimplePropertyDTO
         {
             PropertyIDNumber = property.PropertyIDNumber,
             Address = property.Address,
             YearOfConstruction = property.YearOfConstruction,
-            OwnerID = property.OwnerID
+            
+
         }).ToList();
         return propertyDTOs;
     }
@@ -67,12 +64,16 @@ public class PropertyService
             PropertyIDNumber = property.PropertyIDNumber,
             Address = property.Address,
             YearOfConstruction = property.YearOfConstruction,
-            OwnerID= property.OwnerID
+            OwnerID = property.OwnerID,
+            Repairs = property.Repairs?.Select(repair => new RepairDTO
+            {
+                Id = repair.Id,
+            }).ToList() ?? new List<RepairDTO>() 
         };
 
         return propertyDTO;
-
     }
+
 
     public async Task<PropertyDTO?> UpdateAsync(PropertyDTO propertyDTO)
     {

@@ -28,9 +28,9 @@ public class Repair
     [Range(0.01, double.MaxValue)]
     public decimal Cost { get; set; }
 
-    public Property Property { get; set; }
     [Required]
     public Guid PropertyId { get; set; }
+    public Property Property { get; set; }
 
     public Repair() { }
 
@@ -49,13 +49,15 @@ public class Repair
     {
         Pending,
         InProgress,
-        Complete
+        Completed,
+        Cancelled
     }
 
     public enum RepairType
     {
         Plumbing,
         Electrical,
-        Painting
+        Painting,
+        Other
     }
 }

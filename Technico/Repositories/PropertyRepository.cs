@@ -14,13 +14,9 @@ namespace Technico.Repositories
         }
 
         public async Task<Property?> CreateAsync(Property property)
-        {
-            Console.WriteLine($"Creating Property - Address: {property.Address}, OwnerID: {property.OwnerID}");
-
+        { 
             _dbContext.Properties.Add(property);
             await _dbContext.SaveChangesAsync();
-
-            Console.WriteLine($"Created Property - Address: {property.Address}, OwnerID: {property.OwnerID}");
 
             return property;
         }
@@ -42,8 +38,11 @@ namespace Technico.Repositories
 
         public async Task<Property?> GetAsync(Guid propertyIdNumber)
         {
-            return await _dbContext.Properties.FindAsync(propertyIdNumber);
+            return await _dbContext.Properties
+                                    .Include(p => p.Repairs)
+                                    .FirstOrDefaultAsync(p => p.PropertyIDNumber == propertyIdNumber);
         }
+
 
         public async Task<Property?> UpdateAsync(Property updatedProperty)
         {

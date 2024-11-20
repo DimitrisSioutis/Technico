@@ -19,7 +19,7 @@ public class Property
     public Guid OwnerID { get; set; }
     public User Owner { get; set; }
 
-    public List<Repair> Repairs { get; set; }
+    public virtual List<Repair> Repairs { get; set; } = new List<Repair>();
 
     public Property() { }
     public Property(Guid propertyIDNumber, string address, int yearOfConstruction, string ownerVATNumber, Guid ownerID , List<Repair?> repairs)

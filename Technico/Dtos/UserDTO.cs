@@ -18,9 +18,17 @@ public class UserRequestDTO
 }
 public class UserResponseDTO
 {
-     public Guid Id { get; set; }
-     public string Name { get; set; } = string.Empty;
-     public string Email { get; set; } = string.Empty;
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Surname { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public virtual List<SimplePropertyDTO> Properties { get; set; } = new List<SimplePropertyDTO>();
+}
 
-    public List<PropertyDTO> Properties { get; set; } = new List<PropertyDTO>();
+public class UserSimpleDTO
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Surname { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
 }

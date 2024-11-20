@@ -13,12 +13,14 @@ public class RepairRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Repair?> CreateAsync(Repair repair)
+    public async Task<Repair> CreateAsync(Repair repair)
     {
-        _dbContext.Repairs.Add(repair);
-        await _dbContext.SaveChangesAsync();
-        return repair;
+            _dbContext.Repairs.Add(repair);
+            await _dbContext.SaveChangesAsync();
+            return repair;
+
     }
+
 
     public async Task<bool> DeleteAsync(Guid repairId)
     {

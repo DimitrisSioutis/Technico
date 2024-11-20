@@ -36,13 +36,25 @@ namespace Technico.Controllers
             return repair;
         }
 
-        // POST: api/Repair
         [HttpPost]
         public async Task<ActionResult<Repair>> PostRepair(Repair repair)
         {
-            var newRepair = await _repairService.CreateAsync(repair);
-            return CreatedAtAction("GetById", new { id = newRepair.ScheduledDate }, newRepair);
+            try
+            {
+                Console.WriteLine($"Received payload: {System.Text.Json.JsonSerializer.Serialize(repair)}");
+
+                var newRepair = await _repairService.CreateAsync(repair);
+
+                Console.WriteLine($"New Repair created with ID: {newRepair.Id}");
+                return CreatedAtAction("GetById", new { id = newRepair.Id }, newRepair);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in PostRepair: {ex}");
+                return BadRequest(ex.Message);
+            }
         }
+
 
         // PUT: api/Repair/{id}
         [HttpPut("{id}")]

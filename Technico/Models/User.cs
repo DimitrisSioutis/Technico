@@ -36,7 +36,7 @@ public class User
     [Required]
     public User.Type Role { get; set; } = Type.Client;
 
-    public List<Property> Properties { get; set; } = new List<Property>();
+    public virtual List<Property> Properties { get; set; } = new List<Property>();
 
     public enum Type
     {

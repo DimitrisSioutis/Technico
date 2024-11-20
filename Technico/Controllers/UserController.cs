@@ -19,7 +19,7 @@ namespace Technico.Controllers
 
         // GET: api/Owners
         [HttpGet]
-        public async Task<ActionResult<List<UserResponseDTO?>>> GetAll()
+        public async Task<ActionResult<List<UserSimpleDTO?>>> GetAll()
         {
             return await _userService.GetAllAsync();
         }

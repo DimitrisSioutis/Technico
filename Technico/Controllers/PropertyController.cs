@@ -17,7 +17,7 @@ namespace Technico.Controllers
 
         // GET: api/Property
         [HttpGet]
-        public async Task<ActionResult<List<PropertyDTO?>>> GetAll()
+        public async Task<ActionResult<List<SimplePropertyDTO?>>> GetAll()
         {
             return await _propertyService.GetAllAsync();
         }

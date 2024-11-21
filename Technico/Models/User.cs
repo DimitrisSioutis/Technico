@@ -10,6 +10,7 @@ public class User
 {
     [Key]
     public Guid Id { get; set; }
+
     [Required]
     [MaxLength(9)]
     public string VATNumber { get; set; } = string.Empty;
@@ -45,16 +46,7 @@ public class User
     }
 
     public User() { }
-    public User(
-        Guid id,
-        string vatNumber,
-        string name,
-        string surname,
-        string address,
-        string phoneNumber,
-        string email,
-        string password,
-        User.Type role)
+    public User(Guid id, string vatNumber, string name, string surname, string address, string phoneNumber,string email,string password,User.Type role)
     {
         Id = id;
         VATNumber = vatNumber;

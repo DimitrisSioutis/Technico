@@ -76,7 +76,7 @@ public class UserService
 
         foreach (var property in user.Properties)
         {
-            Console.WriteLine($"Property: ID={property.PropertyIDNumber}, Address={property.Address}, OwnerID={property.OwnerID}");
+            Console.WriteLine($"Property: ID={property.PropertyId}, Address={property.Address}, OwnerID={property.OwnerID}");
         }
 
         var userDTO = new UserResponseDTO
@@ -87,7 +87,7 @@ public class UserService
             Email = user.Email,
             Properties = user.Properties.Select(property => new SimplePropertyDTO
             {
-                PropertyIDNumber = property.PropertyIDNumber,
+                PropertyId = property.PropertyId,
                 Address = property.Address,
                 YearOfConstruction = property.YearOfConstruction
             }).ToList()

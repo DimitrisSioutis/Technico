@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Technico.Models;
 using Technico.Services;
+using Technico.Dtos;
 
 namespace Technico.Controllers
 {
@@ -37,15 +36,11 @@ namespace Technico.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Repair>> PostRepair(Repair repair)
+        public async Task<ActionResult<RepairDTO?>> PostRepair(RepairDTO repair)
         {
             try
             {
-                Console.WriteLine($"Received payload: {System.Text.Json.JsonSerializer.Serialize(repair)}");
-
                 var newRepair = await _repairService.CreateAsync(repair);
-
-                Console.WriteLine($"New Repair created with ID: {newRepair.Id}");
                 return CreatedAtAction("GetById", new { id = newRepair.Id }, newRepair);
             }
             catch (Exception ex)

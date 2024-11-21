@@ -20,15 +20,15 @@ public class TechnicoDBContext : DbContext
             .Property(r => r.Cost)
             .HasPrecision(18, 2);
 
-        modelBuilder.Entity<Repair>()
-             .HasOne(r => r.Property)
-             .WithMany(u => u.Repairs)
-             .HasForeignKey(p => p.PropertyId);
-
         modelBuilder.Entity<Property>()
             .HasOne(p => p.Owner)
             .WithMany(u => u.Properties)
             .HasForeignKey(p => p.OwnerID);
+
+        modelBuilder.Entity<Repair>()
+            .HasOne(r => r.RepairingProperty)
+            .WithMany(u => u.Repairs)
+            .HasForeignKey(r => r.PropertyId);
 
     }
 

@@ -27,10 +27,10 @@ public class Repair
     [Required]
     [Range(0.01, double.MaxValue)]
     public decimal Cost { get; set; }
-
+    
     [Required]
     public Guid PropertyId { get; set; }
-    public Property Property { get; set; }
+    public Property RepairingProperty { get; set; }
 
     public Repair() { }
 

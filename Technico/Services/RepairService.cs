@@ -1,5 +1,6 @@
 ﻿using Technico.Models;
 using Technico.Repositories;
+using Technico.Dtos;
 
 namespace Technico.Services;
 
@@ -12,8 +13,19 @@ public class RepairService
         _repairRepository = repairRepository;
     }
 
-    public async Task<Repair?> CreateAsync(Repair repair)
+    public async Task<Repair?> CreateAsync(RepairDTO repairDto)
     {
+            var repair = new Repair
+            {
+                Id = Guid.NewGuid(),
+                ScheduledDate = repairDto.ScheduledDate,
+                Type = repairDto.Type,
+                CurrentStatus = repairDto.CurrentStatus,
+                Description = repairDto.Description,
+                Address = repairDto.Address,
+                Cost = repairDto.Cost,
+                PropertyId = repairDto.PropertyId
+            };
         await _repairRepository.CreateAsync(repair);
         return repair;
     }

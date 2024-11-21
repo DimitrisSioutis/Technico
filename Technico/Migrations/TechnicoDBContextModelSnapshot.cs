@@ -24,7 +24,7 @@ namespace Technico.Migrations
 
             modelBuilder.Entity("Technico.Models.Property", b =>
                 {
-                    b.Property<Guid>("PropertyIDNumber")
+                    b.Property<Guid>("PropertyId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -39,7 +39,7 @@ namespace Technico.Migrations
                     b.Property<int>("YearOfConstruction")
                         .HasColumnType("int");
 
-                    b.HasKey("PropertyIDNumber");
+                    b.HasKey("PropertyId");
 
                     b.HasIndex("Address")
                         .IsUnique();
@@ -155,13 +155,13 @@ namespace Technico.Migrations
 
             modelBuilder.Entity("Technico.Models.Repair", b =>
                 {
-                    b.HasOne("Technico.Models.Property", "Property")
+                    b.HasOne("Technico.Models.Property", "RepairingProperty")
                         .WithMany("Repairs")
                         .HasForeignKey("PropertyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Property");
+                    b.Navigation("RepairingProperty");
                 });
 
             modelBuilder.Entity("Technico.Models.Property", b =>

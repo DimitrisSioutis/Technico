@@ -7,7 +7,7 @@ namespace Technico.Models;
 public class Property
 {
     [Key]
-    public Guid PropertyIDNumber { get; set; }
+    public Guid PropertyId { get; set; }
 
     [Required]
     [MaxLength(150)]
@@ -18,13 +18,12 @@ public class Property
     [Required]
     public Guid OwnerID { get; set; }
     public User Owner { get; set; }
-
     public virtual List<Repair> Repairs { get; set; } = new List<Repair>();
 
     public Property() { }
-    public Property(Guid propertyIDNumber, string address, int yearOfConstruction, string ownerVATNumber, Guid ownerID , List<Repair?> repairs)
+    public Property(Guid propertyId, string address, int yearOfConstruction, string ownerVATNumber, Guid ownerID , List<Repair?> repairs)
     {
-        PropertyIDNumber = propertyIDNumber;
+        PropertyId = propertyId;
         Address = address;
         YearOfConstruction = yearOfConstruction;
     }

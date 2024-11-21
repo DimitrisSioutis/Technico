@@ -34,14 +34,14 @@ namespace Technico.Migrations
                 name: "Properties",
                 columns: table => new
                 {
-                    PropertyIDNumber = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PropertyId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     YearOfConstruction = table.Column<int>(type: "int", nullable: false),
                     OwnerID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Properties", x => x.PropertyIDNumber);
+                    table.PrimaryKey("PK_Properties", x => x.PropertyId);
                     table.ForeignKey(
                         name: "FK_Properties_Users_OwnerID",
                         column: x => x.OwnerID,
@@ -70,7 +70,7 @@ namespace Technico.Migrations
                         name: "FK_Repairs_Properties_PropertyId",
                         column: x => x.PropertyId,
                         principalTable: "Properties",
-                        principalColumn: "PropertyIDNumber",
+                        principalColumn: "PropertyId",
                         onDelete: ReferentialAction.Cascade);
                 });
 

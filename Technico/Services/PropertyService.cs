@@ -45,7 +45,7 @@ public class PropertyService
         var properties = await _propertyRepository.GetAllAsync();
         var propertyDTOs = properties.Select(property => new SimplePropertyDTO
         {
-            PropertyIDNumber = property.PropertyIDNumber,
+            PropertyId = property.PropertyId,
             Address = property.Address,
             YearOfConstruction = property.YearOfConstruction,
             
@@ -61,7 +61,7 @@ public class PropertyService
 
         var propertyDTO = new PropertyDTO
         {
-            PropertyIDNumber = property.PropertyIDNumber,
+            PropertyId = property.PropertyId,
             Address = property.Address,
             YearOfConstruction = property.YearOfConstruction,
             OwnerID = property.OwnerID,
@@ -77,7 +77,7 @@ public class PropertyService
 
     public async Task<PropertyDTO?> UpdateAsync(PropertyDTO propertyDTO)
     {
-        var existingProperty = await _propertyRepository.GetAsync(propertyDTO.PropertyIDNumber);
+        var existingProperty = await _propertyRepository.GetAsync(propertyDTO.PropertyId);
         if (existingProperty == null) return null;
 
         var properties = await _propertyRepository.GetAllAsync();
@@ -92,7 +92,7 @@ public class PropertyService
 
         return new PropertyDTO
         {
-            PropertyIDNumber = result.PropertyIDNumber,
+            PropertyId = result.PropertyId,
             Address = result.Address,
             OwnerID = result.OwnerID,
             YearOfConstruction= result.YearOfConstruction,

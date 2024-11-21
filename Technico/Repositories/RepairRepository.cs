@@ -15,10 +15,9 @@ public class RepairRepository
 
     public async Task<Repair> CreateAsync(Repair repair)
     {
-            _dbContext.Repairs.Add(repair);
-            await _dbContext.SaveChangesAsync();
-            return repair;
-
+        _dbContext.Repairs.Add(repair);
+        await _dbContext.SaveChangesAsync();
+        return repair;
     }
 
 
@@ -35,13 +34,13 @@ public class RepairRepository
 
     public async Task<List<Repair>> GetAllAsync()
     {
-        return await _dbContext.Repairs.Include(r => r.Property).ToListAsync();
+        return await _dbContext.Repairs.Include(r => r.RepairingProperty).ToListAsync();
     }
 
     public async Task<Repair?> GetAsync(Guid repairId)
     {
         return await _dbContext.Repairs
-                               .Include(r => r.Property)
+                               .Include(r => r.RepairingProperty)
                                .FirstOrDefaultAsync(r => r.Id == repairId);
     }
 
@@ -55,7 +54,7 @@ public class RepairRepository
         repair.Description = updatedRepair.Description;
         repair.Address = updatedRepair.Address;
         repair.Cost = updatedRepair.Cost;
-        repair.Property = updatedRepair.Property;
+        repair.RepairingProperty = updatedRepair.RepairingProperty;
 
         _dbContext.Repairs.Update(repair);
         await _dbContext.SaveChangesAsync();

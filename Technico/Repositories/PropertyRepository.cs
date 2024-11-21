@@ -21,9 +21,9 @@ namespace Technico.Repositories
             return property;
         }
 
-        public async Task<bool> DeleteAsync(Guid propertyIdNumber)
+        public async Task<bool> DeleteAsync(Guid propertyId)
         {
-            Property? property = await GetAsync(propertyIdNumber);
+            Property? property = await GetAsync(propertyId);
             if (property == null)
                 return false;
             _dbContext.Properties.Remove(property);
@@ -36,17 +36,17 @@ namespace Technico.Repositories
             return await _dbContext.Properties.ToListAsync();
         }
 
-        public async Task<Property?> GetAsync(Guid propertyIdNumber)
+        public async Task<Property?> GetAsync(Guid propertyId)
         {
             return await _dbContext.Properties
                                     .Include(p => p.Repairs)
-                                    .FirstOrDefaultAsync(p => p.PropertyIDNumber == propertyIdNumber);
+                                    .FirstOrDefaultAsync(p => p.PropertyId == propertyId);
         }
 
 
         public async Task<Property?> UpdateAsync(Property updatedProperty)
         {
-            var property = await GetAsync(updatedProperty.PropertyIDNumber);
+            var property = await GetAsync(updatedProperty.PropertyId);
             if (property == null)
                 return null;
 

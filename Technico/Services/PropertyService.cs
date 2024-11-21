@@ -49,7 +49,6 @@ public class PropertyService
             Address = property.Address,
             YearOfConstruction = property.YearOfConstruction,
             
-
         }).ToList();
         return propertyDTOs;
     }
@@ -68,6 +67,12 @@ public class PropertyService
             Repairs = property.Repairs?.Select(repair => new RepairDTO
             {
                 Id = repair.Id,
+                ScheduledDate = repair.ScheduledDate,
+                Type = repair.Type,
+                CurrentStatus = repair.CurrentStatus,
+                Cost = repair.Cost,
+                Description = repair.Description
+
             }).ToList() ?? new List<RepairDTO>() 
         };
 

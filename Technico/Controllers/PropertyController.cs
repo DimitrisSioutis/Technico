@@ -39,24 +39,25 @@ namespace Technico.Controllers
         public async Task<ActionResult<PropertyDTO?>> PostProperty(PropertyDTO propertyDTO)
         {
             var newProperty = await _propertyService.CreateAsync(propertyDTO);
+            if (newProperty == null)
+            {
+                return NotFound();
+            }
             return CreatedAtAction("GetById", new { id = newProperty.PropertyId}, newProperty);
         }
 
-        // PUT: api/Property/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProperty(Guid id, PropertyDTO property)
+        public async Task<IActionResult> PutPost([FromRoute] Guid id, [FromBody] PropertyDTO propertyDTO)
         {
-            if (id != property.PropertyId)
+            if (id != propertyDTO.PropertyId)
             {
-                return BadRequest();
+                return BadRequest("Mismatched Property ID");
             }
-
-            var updatedProperty = await _propertyService.UpdateAsync(property);
+            var updatedProperty = await _propertyService.UpdateAsync(id, propertyDTO);
             if (updatedProperty == null)
             {
                 return NotFound();
             }
-
             return Ok(updatedProperty);
         }
 

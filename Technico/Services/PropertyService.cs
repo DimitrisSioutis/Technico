@@ -16,7 +16,7 @@ public class PropertyService
     public async Task<PropertyDTO?> CreateAsync(PropertyDTO propertyDTO)
     {
         var properties = await _propertyRepository.GetAllAsync();
-        bool PropertyExists = properties.Any(u => u.Address == propertyDTO.Address);
+        bool PropertyExists = properties.Any(u => u?.Address == propertyDTO.Address);
         if (PropertyExists) return null;
 
         var property = new Property
@@ -78,29 +78,29 @@ public class PropertyService
 
         return propertyDTO;
     }
-
-
-    public async Task<PropertyDTO?> UpdateAsync(PropertyDTO propertyDTO)
+    public async Task<PropertyDTO> UpdateAsync(Guid id, PropertyDTO propertyDTO)
     {
-        var existingProperty = await _propertyRepository.GetAsync(propertyDTO.PropertyId);
-        if (existingProperty == null) return null;
+        // Explicitly check if the ID in the route matches the ID in the payload
+        if (id != propertyDTO.PropertyId)
+            return null;
 
-        var properties = await _propertyRepository.GetAllAsync();
-        var existingAdress = properties.Single(x => x.Address == propertyDTO.Address);
-
-        if (existingAdress != null) return null;
+        var existingProperty = await _propertyRepository.GetAsync(id);
+        if (existingProperty == null)
+            return null;
 
         existingProperty.Address = propertyDTO.Address;
         existingProperty.YearOfConstruction = propertyDTO.YearOfConstruction;
 
         var result = await _propertyRepository.UpdateAsync(existingProperty);
+        if (result == null)
+            return null;
 
         return new PropertyDTO
         {
             PropertyId = result.PropertyId,
             Address = result.Address,
             OwnerID = result.OwnerID,
-            YearOfConstruction= result.YearOfConstruction,
+            YearOfConstruction = result.YearOfConstruction
         };
     }
 }

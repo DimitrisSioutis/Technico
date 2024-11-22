@@ -38,16 +38,12 @@ namespace Technico.Controllers
         [HttpPost]
         public async Task<ActionResult<RepairDTO?>> PostRepair(RepairDTO repair)
         {
-            try
+            var newRepair = await _repairService.CreateAsync(repair);
+            if (newRepair == null)
             {
-                var newRepair = await _repairService.CreateAsync(repair);
-                return CreatedAtAction("GetById", new { id = newRepair.Id }, newRepair);
+                return NotFound();
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error in PostRepair: {ex}");
-                return BadRequest(ex.Message);
-            }
+            return CreatedAtAction("GetById", new { id = newRepair.Id }, newRepair);
         }
 
 

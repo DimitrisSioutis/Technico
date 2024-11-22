@@ -1,5 +1,4 @@
 using Technico.Repositories;
-using Technico.Models;
 using Technico.Services;
 using Microsoft.EntityFrameworkCore;
 using Technico.Context;

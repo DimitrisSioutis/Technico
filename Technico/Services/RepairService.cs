@@ -35,7 +35,7 @@ public class RepairService
         return await _repairRepository.DeleteAsync(repairId);
     }
 
-    public async Task<List<Repair?>> GetAllAsync()
+    public async Task<List<Repair>> GetAllAsync()
     {
         return await _repairRepository.GetAllAsync();
     }

@@ -17,16 +17,18 @@ namespace Technico.Controllers
             _userService = userService;
         }
 
-        // GET: api/Owners
+        // GET: api/User
         [HttpGet]
-        public async Task<ActionResult<List<UserSimpleDTO?>>> GetAll()
+        public async Task<ActionResult<List<UserSimpleDTO>>> GetAll()
         {
             return await _userService.GetAllAsync();
         }
 
-        // GET: api/Owner/{id}
+
+
+        // GET: api/User/id
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserResponseDTO>> GetById(Guid id)
+        public async Task<ActionResult<UserFullDTO>> GetById(Guid id)
         {
             var user = await _userService.GetAsync(id);
 
@@ -38,8 +40,9 @@ namespace Technico.Controllers
             return user;
         }
 
+        // api/User/id
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPost([FromRoute] Guid id, [FromBody] UserRequestDTO user)
+        public async Task<IActionResult> PutPost([FromRoute] Guid id, [FromBody] UserFullDTO user)
         {
             // Ensure the provided id matches the user's id (optional validation)
             if (id != user.Id)
@@ -60,7 +63,7 @@ namespace Technico.Controllers
 
         // POST: api/User
         [HttpPost]
-        public async Task<ActionResult<UserResponseDTO>> PostUser(UserRequestDTO user)
+        public async Task<ActionResult<UserSimpleDTO>> PostUser(UserFullDTO user)
         {
             var newUser = await _userService.CreateAsync(user);
 

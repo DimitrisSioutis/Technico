@@ -31,7 +31,7 @@ namespace Technico.Repositories
             return true;
         }
 
-        public async Task<List<Property?>> GetAllAsync()
+        public async Task<List<Property>> GetAllAsync()
         {
             return await _dbContext.Properties.ToListAsync();
         }
@@ -44,14 +44,14 @@ namespace Technico.Repositories
         }
 
 
-        public async Task<Property?> UpdateAsync(Property updatedProperty)
+        public async Task<Property?> UpdateAsync(Property oldProperty)
         {
-            var property = await GetAsync(updatedProperty.PropertyId);
+            var property = await GetAsync(oldProperty.PropertyId);
             if (property == null)
                 return null;
 
-            property.Address = updatedProperty.Address;
-            property.YearOfConstruction = updatedProperty.YearOfConstruction;
+            property.Address = oldProperty.Address;
+            property.YearOfConstruction = oldProperty.YearOfConstruction;
 
             _dbContext.Properties.Update(property);
             await _dbContext.SaveChangesAsync();

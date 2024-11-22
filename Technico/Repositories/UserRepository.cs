@@ -32,9 +32,9 @@ public class UserRepository
         return true;
     }
 
-    public async Task<List<User?>> GetAllAsync()
+    public async Task<List<User>> GetAllAsync()
     {
-        var owners = new List<User?>();
+        var owners = new List<User>();
         owners = await _dbContext.Users.ToListAsync();
         return owners;
     }
@@ -46,7 +46,7 @@ public class UserRepository
             .FirstOrDefaultAsync(u => u.Id == id);
     }
 
-    public async Task<User?> UpdateAsync(User oldUser)
+    public async Task<User> UpdateAsync(User oldUser)
     {
         User? user = await GetAsync(oldUser.Id);
         oldUser.Email = user.Email;

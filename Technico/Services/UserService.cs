@@ -13,11 +13,11 @@ public class UserService
         _userRepository = userRepository;
     }
 
-    public async Task<UserResponseDTO?> CreateAsync(UserRequestDTO createDto)
+    public async Task<UserSimpleDTO?> CreateAsync(UserFullDTO createDto)
     {
         var users = await _userRepository.GetAllAsync();
 
-        bool VATexists = users.Any(u => u.VATNumber == createDto.VATNumber);
+        bool VATexists = users.Any(u => u?.VATNumber == createDto.VATNumber);
         if (VATexists)return null;
 
         bool emailExists = users.Any(u => u.Email == createDto.Email);
@@ -35,7 +35,7 @@ public class UserService
         };
         var result = await _userRepository.CreateAsync(user);
 
-        return result == null ? null : new UserResponseDTO
+        return result == null ? null : new UserSimpleDTO
         {
             Id = result.Id,
             Name = result.Name,
@@ -44,7 +44,7 @@ public class UserService
     }
 
 
-    public async Task<UserResponseDTO?> UpdateAsync(Guid id, UserRequestDTO user)
+    public async Task<UserSimpleDTO?> UpdateAsync(Guid id, UserFullDTO user)
     {
         var existingUser = await _userRepository.GetAsync(id);
         if (existingUser == null) return null;
@@ -55,7 +55,7 @@ public class UserService
 
         var result = await _userRepository.UpdateAsync(existingUser);
 
-        return new UserResponseDTO
+        return new UserSimpleDTO
         {
             Id = result.Id,
             Name = result.Name,
@@ -68,7 +68,7 @@ public class UserService
         return await _userRepository.DeleteAsync(id);
     }
 
-    public async Task<UserResponseDTO?> GetAsync(Guid id)
+    public async Task<UserFullDTO?> GetAsync(Guid id)
     {
         var user = await _userRepository.GetAsync(id);
         if (user == null) return null;
@@ -79,12 +79,16 @@ public class UserService
             Console.WriteLine($"Property: ID={property.PropertyId}, Address={property.Address}, OwnerID={property.OwnerID}");
         }
 
-        var userDTO = new UserResponseDTO
+        var userDTO = new UserFullDTO
         {
             Id = user.Id,
+            VATNumber = user.VATNumber,
             Name = user.Name,
             Surname = user.Surname,
             Email = user.Email,
+            Address = user.Address,
+            Password = user.Password,
+            PhoneNumber = user.PhoneNumber,
             Properties = user.Properties.Select(property => new SimplePropertyDTO
             {
                 PropertyId = property.PropertyId,

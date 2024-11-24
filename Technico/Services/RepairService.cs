@@ -45,8 +45,29 @@ public class RepairService
         return await _repairRepository.GetAsync(repairId);
     }
 
-    public async Task<Repair?> UpdateAsync(Repair repair)
+    public async Task<RepairDTO?> UpdateAsync(Guid id,RepairDTO repair)
     {
-        return await _repairRepository.UpdateAsync(repair);
+        if (id != repair.Id)
+            return null;
+
+        var existingRepair = await _repairRepository.GetAsync(id);
+        if (existingRepair == null)
+            return null;
+
+        existingRepair.ScheduledDate = repair.ScheduledDate;
+        existingRepair.Type = repair.Type;
+        existingRepair.CurrentStatus = repair.CurrentStatus;
+        existingRepair.Description = repair.Description;
+        existingRepair.Address = repair.Address;
+        existingRepair.Cost = repair.Cost;
+
+        var result = await _repairRepository.UpdateAsync(existingRepair);
+        if (result == null)
+            return null;
+
+        return new RepairDTO
+        {
+            PropertyId = result.PropertyId
+        };
     }
 }

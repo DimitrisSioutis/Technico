@@ -78,9 +78,8 @@ public class PropertyService
 
         return propertyDTO;
     }
-    public async Task<PropertyDTO> UpdateAsync(Guid id, PropertyDTO propertyDTO)
+    public async Task<PropertyDTO?> UpdateAsync(Guid id, PropertyDTO propertyDTO)
     {
-        // Explicitly check if the ID in the route matches the ID in the payload
         if (id != propertyDTO.PropertyId)
             return null;
 

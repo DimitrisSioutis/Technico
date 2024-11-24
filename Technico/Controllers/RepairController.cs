@@ -49,14 +49,14 @@ namespace Technico.Controllers
 
         // PUT: api/Repair/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRepair(Guid id, Repair repair)
+        public async Task<IActionResult> UpdateRepair([FromRoute] Guid id, [FromBody] RepairDTO repair)
         {
             if (id != repair.Id) 
             {
                 return BadRequest();
             }
 
-            var updatedRepair = await _repairService.UpdateAsync(repair);
+            var updatedRepair = await _repairService.UpdateAsync(id,repair);
             if (updatedRepair == null)
             {
                 return NotFound();

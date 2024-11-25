@@ -18,14 +18,14 @@ namespace Technico.Controllers
 
         // GET: api/Repair
         [HttpGet]
-        public async Task<ActionResult<List<Repair>>> GetAll()
+        public async Task<ActionResult<List<RepairDTO>>> GetAll()
         {
             return await _repairService.GetAllAsync();
         }
 
         // GET: api/Repair/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<Repair>> GetById(Guid id)
+        public async Task<ActionResult<RepairDTO>> GetById(Guid id)
         {
             var repair = await _repairService.GetAsync(id);
             if (repair == null)

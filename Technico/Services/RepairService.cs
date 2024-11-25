@@ -36,16 +36,40 @@ public class RepairService : IRepairService
         return await _repairRepository.DeleteAsync(repairId);
     }
 
-    public async Task<List<Repair>> GetAllAsync()
+    public async Task<List<RepairDTO>> GetAllAsync()
     {
-        return await _repairRepository.GetAllAsync();
+        var repairs = await _repairRepository.GetAllAsync();
+        return repairs.Select(repair => new RepairDTO
+        {
+            Id = repair.Id,
+            ScheduledDate = repair.ScheduledDate,
+            Type = repair.Type,
+            CurrentStatus = repair.CurrentStatus,
+            Description = repair.Description,
+            Address = repair.Address,
+            Cost = repair.Cost,
+            PropertyId = repair.PropertyId
+        }).ToList();
     }
 
-    public async Task<Repair?> GetAsync(Guid repairId)
+    public async Task<RepairDTO?> GetAsync(Guid repairId)
     {
-        return await _repairRepository.GetAsync(repairId);
-    }
+        var repair = await _repairRepository.GetAsync(repairId);
+        if (repair == null)
+            return null;
 
+        return new RepairDTO
+        {
+            Id = repair.Id,
+            ScheduledDate = repair.ScheduledDate,
+            Type = repair.Type,
+            CurrentStatus = repair.CurrentStatus,
+            Description = repair.Description,
+            Address = repair.Address,
+            Cost = repair.Cost,
+            PropertyId = repair.PropertyId
+        };
+    }
     public async Task<RepairDTO?> UpdateAsync(Guid id,RepairDTO repair)
     {
         if (id != repair.Id)

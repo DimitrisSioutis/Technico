@@ -1,10 +1,11 @@
 ﻿using Technico.Models;
 using Technico.Repositories;
 using Technico.Dtos;
+using Technico.Interfaces;
 
 namespace Technico.Services;
 
-public class RepairService
+public class RepairService : IRepairService
 {
     private readonly RepairRepository _repairRepository;
 

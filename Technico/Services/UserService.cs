@@ -1,10 +1,11 @@
 ﻿using Technico.Models;
 using Technico.Repositories;
 using Technico.Dtos;
+using Technico.Interfaces;
 
 namespace Technico.Services;
 
-public class UserService
+public class UserService : IUserService
 {
     private readonly UserRepository _userRepository;
 

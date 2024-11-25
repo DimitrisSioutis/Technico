@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Technico.Models;
-using Technico.Services;
 using Technico.Dtos;
+using Technico.Interfaces;
 
 namespace Technico.Controllers
 {
@@ -9,16 +9,16 @@ namespace Technico.Controllers
     [ApiController]
     public class RepairController : ControllerBase
     {
-        private readonly RepairService _repairService;
+        private readonly IRepairService _repairService;
 
-        public RepairController(RepairService repairService)
+        public RepairController(IRepairService repairService)
         {
             _repairService = repairService;
         }
 
         // GET: api/Repair
         [HttpGet]
-        public async Task<ActionResult<List<Repair?>>> GetAll()
+        public async Task<ActionResult<List<Repair>>> GetAll()
         {
             return await _repairService.GetAllAsync();
         }

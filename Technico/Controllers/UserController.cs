@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Technico.Models;
 using Technico.Services;
 using Technico.Dtos;
-using Microsoft.AspNetCore.Identity.Data;
+using Technico.Interfaces;
 
 namespace Technico.Controllers
 {
@@ -10,9 +9,9 @@ namespace Technico.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly UserService _userService;
+        private readonly IUserService _userService;
 
-        public UserController(UserService userService)
+        public UserController(IUserService userService)
         {
             _userService = userService;
         }

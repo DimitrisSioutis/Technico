@@ -1,12 +1,12 @@
 using Technico.Repositories;
-using Technico.Services;
+using Technico.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Technico.Context;
+using Technico.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -14,9 +14,10 @@ builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<PropertyRepository>();
 builder.Services.AddScoped<RepairRepository>();
 
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<PropertyService>();
-builder.Services.AddScoped<RepairService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPropertyService, PropertyService>();
+builder.Services.AddScoped<IRepairService, RepairService>();
+
 
 builder.Services.AddDbContext<TechnicoDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("TechnicoDBContext")));
 builder.Services.AddCors(options =>

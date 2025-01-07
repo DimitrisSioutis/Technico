@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Technico.Models;
 using Technico.Dtos;
 using Technico.Interfaces;
 

@@ -12,7 +12,8 @@ public class User
     public Guid Id { get; set; }
 
     [Required]
-    [MaxLength(9)]
+    [MaxLength(12)]
+    [MinLength(9)]
     public string VATNumber { get; set; } = string.Empty;
     [Required]
     [MaxLength(50)]
@@ -25,14 +26,13 @@ public class User
     public string Address { get; set; } = string.Empty;
     [Required]
     [Phone]
-    [MaxLength(15)]
     public string PhoneNumber { get; set; } = string.Empty;
     [Required]
     [EmailAddress]
-    [MaxLength(100)]
     public string Email { get; set; } = string.Empty;
     [Required]
     [DataType(DataType.Password)]
+    [MinLength(6)]
     public string Password { get; set; } = string.Empty;
     [Required]
     public User.Type Role { get; set; } = Type.Client;

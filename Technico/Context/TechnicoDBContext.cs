@@ -1,16 +1,25 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Technico.Models;
-namespace Technico.Context;
 
 public class TechnicoDBContext : DbContext
 {
-    public DbSet<User> Users{ get; set; }
-    public DbSet<Repair> Repairs{ get; set; }
-    public DbSet<Property> Properties{ get; set; }
+    public DbSet<User> Users { get; set; }
+    public DbSet<Repair> Repairs { get; set; }
+    public DbSet<Property> Properties { get; set; }
 
-    public TechnicoDBContext(DbContextOptions<TechnicoDBContext> options) : base(options)
+    public TechnicoDBContext(DbContextOptions<TechnicoDBContext> options)
+        : base(options)
     {
     }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=Technico;Trusted_Connection=True;TrustServerCertificate=True;");
+        }
+    }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -29,14 +38,5 @@ public class TechnicoDBContext : DbContext
             .HasOne(r => r.RepairingProperty)
             .WithMany(u => u.Repairs)
             .HasForeignKey(r => r.PropertyId);
-
     }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlServer("Server = localhost\\SQLEXPRESS; Database = Technico; Trusted_Connection = True; TrustServerCertificate = True;");
-        optionsBuilder.EnableSensitiveDataLogging();
-    }
-
 }
-

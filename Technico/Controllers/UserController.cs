@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Technico.Dtos;
 using Technico.Interfaces;
+using static Technico.Services.UserService;
 
 namespace Technico.Controllers
 {
@@ -24,75 +25,102 @@ namespace Technico.Controllers
 
 
 
-        // GET: api/User/id
         [HttpGet("{id}")]
         public async Task<ActionResult<UserFullDTO?>> GetById(Guid id)
         {
-            return await _userService.GetAsync(id);
+            try
+            {
+                var user = await _userService.GetAsync(id);
+                if (user == null)
+                {
+                    return NotFound(new { message = "User not found" });
+                }
+                return Ok(user);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", details = ex.Message });
+            }
         }
 
-        // api/User/id
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPost([FromRoute] Guid id, [FromBody] UserFullDTO user)
+        public async Task<IActionResult> UpdateUser(Guid id, UserFullDTO user)
         {
-            if (id != user.Id)
+            try
             {
-                return BadRequest("Mismatched user ID");
+                var updatedUser = await _userService.UpdateAsync(id, user);
+                return Ok(updatedUser); 
             }
-
-            var result = await _userService.UpdateAsync(id,user);
-
-            if (!result.Success)
+            catch (KeyNotFoundException)
             {
-                return Conflict(new { message = result.Message });
+                return NotFound("User not found");
             }
-            return Ok(result);
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, "Failed to update user"); // Handle any other error
+            }
         }
 
 
         [HttpPost]
-        public async Task<ActionResult<UserSimpleDTO>> PostUser(UserFullDTO user)
+        public async Task<IActionResult> CreateUser([FromBody] UserCreateDTO createDto)
         {
-            var result = await _userService.CreateAsync(user);
-
-            if (!result.Success)
+            if (!ModelState.IsValid)
             {
-                return Conflict(new { message = result.Message });
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+                return BadRequest(new { message = "Invalid data", errors });
             }
 
-            return CreatedAtAction(nameof(PostUser), new { id = result.Data?.Id }, result.Data);
+            try
+            {
+                var userDto = await _userService.CreateAsync(createDto);
+                return Ok(userDto);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred", details = ex.Message });
+            }
         }
 
-        // DELETE: api/User/{id}
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
-            var deleteResult = await _userService.DeleteAsync(id);
-
-            if (!deleteResult.Success)
+            try
             {
-                return BadRequest(new { message = deleteResult.Message });
+                var result = await _userService.DeleteAsync(id);
+                return Ok(result);
             }
-
-            return Ok(new { message = deleteResult.Message });
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An unexpected error occurred", details = ex.Message });
+            }
         }
 
-
-        // Login endpoint
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)
         {
-            Console.WriteLine($"Received Email: {loginDto.Email}, Password: {loginDto.Password}");
-            var result = await _userService.LoginAsync(loginDto.Email, loginDto.Password);
+   
+            var token = await _userService.LoginAsync(loginDto.Email, loginDto.Password);
 
-            if (!result.Success)
+            if (token == null)
             {
-                Console.WriteLine("Login failed: " + result.Message);
-                return Unauthorized(new { message = result.Message });
+                return Unauthorized(new { message = "Invalid email or password" });
             }
 
-            Console.WriteLine("Login successful, returning token.");
-            return Ok(result);
+            return Ok(new { token });
         }
 
 

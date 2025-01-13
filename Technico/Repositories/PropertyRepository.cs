@@ -1,61 +1,82 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Technico.Context;
 using Technico.Models;
 
-namespace Technico.Repositories
+namespace Technico.Repositories;
+
+public interface IPropertyRepository
 {
-    public class PropertyRepository
+    Task<Property?> CreateAsync(Property property);
+    Task<bool> DeleteAsync(Guid propertyId);
+    Task<List<Property>> GetAllAsync();
+    Task<Property?> GetAsync(Guid propertyId);
+    Task<Property?> UpdateAsync(Property property);
+}
+
+public class PropertyRepository : IPropertyRepository
+{
+    private readonly TechnicoDBContext _dbContext;
+
+    public PropertyRepository(TechnicoDBContext dbContext)
     {
-        private readonly TechnicoDBContext _dbContext;
+        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+    }
 
-        public PropertyRepository(TechnicoDBContext dbContext)
+    public async Task<Property?> CreateAsync(Property property)
+    {
+        ArgumentNullException.ThrowIfNull(property);
+
+        _dbContext.Properties.Add(property);
+        await _dbContext.SaveChangesAsync();
+
+        // Return the property with related data loaded
+        return await GetAsync(property.PropertyId);
+    }
+
+    public async Task<bool> DeleteAsync(Guid propertyId)
+    {
+        var property = await _dbContext.Properties.FindAsync(propertyId);
+        if (property is null)
         {
-            _dbContext = dbContext;
+            return false;
         }
 
-        public async Task<Property?> CreateAsync(Property property)
-        { 
-            _dbContext.Properties.Add(property);
-            await _dbContext.SaveChangesAsync();
+        _dbContext.Properties.Remove(property);
+        await _dbContext.SaveChangesAsync();
+        return true;
+    }
 
-            return property;
-        }
+    public async Task<List<Property>> GetAllAsync()
+    {
+        return await _dbContext.Properties
+            .Include(p => p.Repairs)
+            .AsNoTracking()
+            .ToListAsync();
+    }
 
-        public async Task<bool> DeleteAsync(Guid propertyId)
+    public async Task<Property?> GetAsync(Guid propertyId)
+    {
+        return await _dbContext.Properties
+            .Include(p => p.Repairs)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.PropertyId == propertyId);
+    }
+
+    public async Task<Property?> UpdateAsync(Property updatedProperty)
+    {
+        ArgumentNullException.ThrowIfNull(updatedProperty);
+
+        var property = await _dbContext.Properties
+            .Include(p => p.Repairs)
+            .FirstOrDefaultAsync(p => p.PropertyId == updatedProperty.PropertyId);
+
+        if (property is null)
         {
-            Property? property = await GetAsync(propertyId);
-            if (property == null)
-                return false;
-            _dbContext.Properties.Remove(property);
-            await _dbContext.SaveChangesAsync();
-            return true;
+            return null;
         }
 
-        public async Task<List<Property>> GetAllAsync()
-        {
-            return await _dbContext.Properties.ToListAsync();
-        }
+        _dbContext.Entry(property).CurrentValues.SetValues(updatedProperty);
 
-        public async Task<Property?> GetAsync(Guid propertyId)
-        {
-            return await _dbContext.Properties
-                                    .Include(p => p.Repairs)
-                                    .FirstOrDefaultAsync(p => p.PropertyId == propertyId);
-        }
-
-
-        public async Task<Property?> UpdateAsync(Property oldProperty)
-        {
-            var property = await GetAsync(oldProperty.PropertyId);
-            if (property == null)
-                return null;
-
-            property.Address = oldProperty.Address;
-            property.YearOfConstruction = oldProperty.YearOfConstruction;
-
-            _dbContext.Properties.Update(property);
-            await _dbContext.SaveChangesAsync();
-            return property;
-        }
+        await _dbContext.SaveChangesAsync();
+        return property;
     }
 }

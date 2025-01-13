@@ -1,31 +1,46 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Technico.Context;
 using Technico.Models;
 
 namespace Technico.Repositories;
 
-public class RepairRepository
+public interface IRepairRepository
+{
+    Task<Repair> CreateAsync(Repair repair);
+    Task<bool> DeleteAsync(Guid repairId);
+    Task<List<Repair>> GetAllAsync();
+    Task<Repair?> GetAsync(Guid repairId);
+    Task<Repair?> UpdateAsync(Repair updatedRepair);
+    Task<List<Repair>> GetDailyAsync();
+    Task<List<Repair>> GetOngoingAsync();
+}
+
+public class RepairRepository : IRepairRepository
 {
     private readonly TechnicoDBContext _dbContext;
 
     public RepairRepository(TechnicoDBContext dbContext)
     {
-        _dbContext = dbContext;
+        _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
     }
 
     public async Task<Repair> CreateAsync(Repair repair)
     {
+        ArgumentNullException.ThrowIfNull(repair);
+
         _dbContext.Repairs.Add(repair);
         await _dbContext.SaveChangesAsync();
-        return repair;
-    }
 
+        // Reload the repair with related property data
+        return await GetAsync(repair.Id) ?? repair;
+    }
 
     public async Task<bool> DeleteAsync(Guid repairId)
     {
-        var repair = await GetAsync(repairId);
-        if (repair == null)
+        var repair = await _dbContext.Repairs.FindAsync(repairId);
+        if (repair is null)
+        {
             return false;
+        }
 
         _dbContext.Repairs.Remove(repair);
         await _dbContext.SaveChangesAsync();
@@ -34,46 +49,60 @@ public class RepairRepository
 
     public async Task<List<Repair>> GetAllAsync()
     {
-        return await _dbContext.Repairs.Include(r => r.RepairingProperty).ToListAsync();
+        return await _dbContext.Repairs
+            .Include(r => r.RepairingProperty)
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public async Task<Repair?> GetAsync(Guid repairId)
     {
         return await _dbContext.Repairs
-                               .Include(r => r.RepairingProperty)
-                               .FirstOrDefaultAsync(r => r.Id == repairId);
+            .Include(r => r.RepairingProperty)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(r => r.Id == repairId);
     }
 
     public async Task<Repair?> UpdateAsync(Repair updatedRepair)
     {
-        var repair = await GetAsync(updatedRepair.Id);
-        if (repair == null)
+        ArgumentNullException.ThrowIfNull(updatedRepair);
+
+        var repair = await _dbContext.Repairs
+            .Include(r => r.RepairingProperty)
+            .FirstOrDefaultAsync(r => r.Id == updatedRepair.Id);
+
+        if (repair is null)
+        {
             return null;
+        }
 
-        repair.ScheduledDate = updatedRepair.ScheduledDate;
-        repair.Description = updatedRepair.Description;
-        repair.Address = updatedRepair.Address;
-        repair.Cost = updatedRepair.Cost;
-        repair.RepairingProperty = updatedRepair.RepairingProperty;
+        _dbContext.Entry(repair).CurrentValues.SetValues(updatedRepair);
 
-        _dbContext.Repairs.Update(repair);
+        if (updatedRepair.RepairingProperty is not null)
+        {
+            repair.RepairingProperty = updatedRepair.RepairingProperty;
+        }
+
         await _dbContext.SaveChangesAsync();
         return repair;
     }
 
     public async Task<List<Repair>> GetDailyAsync()
     {
+        var today = DateTime.Today;
         return await _dbContext.Repairs
-                        .Include(r => r.RepairingProperty)
-                        .Where(r => r.ScheduledDate.Date == DateTime.Today)
-                        .ToListAsync();
+            .Include(r => r.RepairingProperty)
+            .AsNoTracking()
+            .Where(r => r.ScheduledDate.Date == today)
+            .ToListAsync();
     }
 
     public async Task<List<Repair>> GetOngoingAsync()
     {
         return await _dbContext.Repairs
-                        .Include(r => r.RepairingProperty)
-                        .Where(r => r.CurrentStatus != Repair.Status.Completed)
-                        .ToListAsync();
+            .Include(r => r.RepairingProperty)
+            .AsNoTracking()
+            .Where(r => r.CurrentStatus != Repair.Status.Completed)
+            .ToListAsync();
     }
 }
